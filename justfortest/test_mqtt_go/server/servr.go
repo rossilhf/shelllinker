@@ -2,10 +2,7 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -47,19 +44,36 @@ func main() {
 
 	client := MQTT.NewClient(opts)
 	client.Connect()
-	//c, cancel := context.WithCancel(context.Background())
 
-	sigChan := make(chan os.Signal)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	//sigChan := make(chan os.Signal)
+	//signal.Notify(sigChan, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT,
+	//	syscall.SIGQUIT)
+	//go func() {
+	//	for s := range sigChan {
+	//		switch s {
+	//		case syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT:
+	//			fmt.Println("Program Exit...", s)
+	//			os.Exit(1)
+	//		default:
+	//
+	//		}
+	//	}
+	//}()
+
+	readloop:
 	for {
-		select {
-		case <-sigChan:
-			break
-		default:
-		}
+		//select {
+		//case <-sigChan:
+		//	return
+		//default:
+		//
+		//}
 		fmt.Println("cmd: ")
 		var Input string
-		fmt.Scanln(&Input)
+		_,err:=fmt.Scanln(&Input)
+		if Input == "exit" || err != nil{
+			break readloop
+		}
 		strsend := strconv.Itoa(int(time.Now().Unix())) + "---->" + Input
 		client.Publish(IOTDEV, 1, false, strsend)
 		fmt.Println("send cmd:", strsend)
