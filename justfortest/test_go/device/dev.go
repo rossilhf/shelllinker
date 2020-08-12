@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
+	//"os"
 	"strconv"
 	"time"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
-	//"device/config"
-	//"device/encryption"
+	"device/config"
+	"device/encryption"
 )
 
 var (
@@ -44,15 +44,16 @@ func publishTimer(ctx context.Context, client MQTT.Client) {
 }
 
 func main() {
-	/*ip, user, psw := config.ReadMQinfo()
+	ip, user, psw := config.ReadMQinfo()
 	fmt.Println(ip, user, psw)
 
-	str := encryption.Encrypt(11, "117.50.109.189")
+	str := encryption.Encrypt(11, "tcp://117.50.109.189:1883")
 	fmt.Println(str)
 	str = encryption.Decrypt(11, str)
-	fmt.Println(str)*/
+	fmt.Println(str)
+
 	//publish.py
-	opts := MQTT.NewClientOptions()
+	/*opts := MQTT.NewClientOptions()
 	opts.AddBroker("tcp://117.50.109.189:1883")
 	opts.SetUsername("admin")
 	opts.SetPassword("public")
@@ -66,5 +67,5 @@ func main() {
 	sigChan := make(chan os.Signal)
 	<-sigChan
 	cancel()
-	fmt.Println("shutting down server")
+	fmt.Println("shutting down server")*/
 }

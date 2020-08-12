@@ -1,4 +1,4 @@
-module device
+module servr.go
 
 go 1.14
 
