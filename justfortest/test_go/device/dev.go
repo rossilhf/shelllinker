@@ -45,7 +45,7 @@ func publishTimer(ctx context.Context, client MQTT.Client) {
 }
 
 func main() {
-	ip, user, psw := config.ReadMQinfo()
+	/*ip, user, psw := config.ReadMQinfo()
 	fmt.Println(ip, user, psw)
 
 	str := encryption.Encrypt(11, "tcp://117.50.109.189:1883")
@@ -56,11 +56,23 @@ func main() {
 	str = getinfo.Get_curVersion()
 	fmt.Println(str)
 
-	str = getinfo.Get_curOs()
+	os := getinfo.Get_curOs()
+	fmt.Println(os)
+
+	str = getinfo.Get_curCpu(os)
 	fmt.Println(str)
 
+	mac, ip := getinfo.Get_curNet(os)
+	fmt.Println(mac, ip)
+
+	user = getinfo.Get_curUser(os)
+	fmt.Println(user)
+
+	path := getinfo.Get_curPath(os)
+	fmt.Println(path)*/
+
 	//publish.py
-	/*opts := MQTT.NewClientOptions()
+	opts := MQTT.NewClientOptions()
 	opts.AddBroker("tcp://117.50.109.189:1883")
 	opts.SetUsername("admin")
 	opts.SetPassword("public")
@@ -74,5 +86,5 @@ func main() {
 	sigChan := make(chan os.Signal)
 	<-sigChan
 	cancel()
-	fmt.Println("shutting down server")*/
+	fmt.Println("shutting down server")
 }
