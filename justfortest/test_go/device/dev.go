@@ -4,12 +4,13 @@ import (
 	"context"
 	"fmt"
 	//"os"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"strconv"
 	"time"
-	MQTT "github.com/eclipse/paho.mqtt.golang"
 
 	"device/config"
 	"device/encryption"
+	"device/getinfo"
 )
 
 var (
@@ -19,9 +20,9 @@ var (
 )
 
 func iotReportMsgHandler(client MQTT.Client, msg MQTT.Message) {
-        fmt.Println("got:", msg.Topic(), string(msg.Payload()))
-	retstr := "recvedsssssssssssssssddddddddddddddddddddd"+string(msg.Payload())
-	client.Publish(IOTRETURN,1, false,retstr)
+	fmt.Println("got:", msg.Topic(), string(msg.Payload()))
+	retstr := "recvedsssssssssssssssddddddddddddddddddddd" + string(msg.Payload())
+	client.Publish(IOTRETURN, 1, false, retstr)
 }
 
 func onConnectHandler(client MQTT.Client) {
@@ -50,6 +51,12 @@ func main() {
 	str := encryption.Encrypt(11, "tcp://117.50.109.189:1883")
 	fmt.Println(str)
 	str = encryption.Decrypt(11, str)
+	fmt.Println(str)
+
+	str = getinfo.Get_curVersion()
+	fmt.Println(str)
+
+	str = getinfo.Get_curOs()
 	fmt.Println(str)
 
 	//publish.py
