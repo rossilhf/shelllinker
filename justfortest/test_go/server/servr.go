@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"time"
+	//"strconv"
+	//"time"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
@@ -15,9 +15,9 @@ var (
 )
 
 var (
-	IOTREPORT = "iotreport"
-	IOTRETURN = "iotreturn"
-	IOTDEV    = "iot/dev"
+	IOTREPORT = "topic_dev2ser/dev_info/38:d5:47:00:42:52" //"iotreport"
+	IOTRETURN = "topic_dev2ser/exec_result/38:d5:47:00:42:52" //"iotreturn"
+	IOTDEV    = "topic_ser2dev/exec_cmd/38:d5:47:00:42:52" //"iot/dev"
 )
 
 func iotReturnHandler(client MQTT.Client, msg MQTT.Message) {
@@ -74,7 +74,8 @@ func main() {
 		if Input == "exit" || err != nil{
 			break readloop
 		}
-		strsend := strconv.Itoa(int(time.Now().Unix())) + "---->" + Input
+		//strsend := strconv.Itoa(int(time.Now().Unix())) + "---->" + Input
+		strsend := Input
 		client.Publish(IOTDEV, 1, false, strsend)
 		fmt.Println("send cmd:", strsend)
 	}

@@ -45,7 +45,7 @@ def decrypt(ksa, s):
 
 if __name__ == "__main__":
     #text = '{"name":"rossi", "class":"car", context:"hello, i am Charmy."}'
-    text = "test"#"admin"#"117.50.109.189"#"rossi_lhf"
+    text = "tcp://117.50.109.189:1883"#"rossi_lhf"
     start = time.time()
     s = encrypt(11, text)
     end = time.time()
