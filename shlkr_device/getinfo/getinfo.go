@@ -10,7 +10,7 @@ import (
 )
 
 func Get_curVersion() string {
-	version := "V20200818"
+	version := "V20200831"
 
 	return version
 }

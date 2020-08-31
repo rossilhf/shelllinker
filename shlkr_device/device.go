@@ -7,8 +7,8 @@ import (
 	"os"
 	"os/exec"
 	//"strconv"
-	"strings"
 	"encoding/json"
+	"strings"
 	"time"
 
 	"shlkr_device/config"
@@ -64,18 +64,18 @@ func iotReportMsgHandler(client MQTT.Client, msg MQTT.Message) {
 	if strings.IndexAny(cmd, "cd ") == 0 {
 		leng := len(cmd)
 		//path := cmd[3 : leng-1]
-		path := cmd[3 : leng]
+		path := cmd[3:leng]
 		err := os.Chdir(path)
 		if err != nil {
 			fmt.Println(err)
-			cmdresult = "Error: excute " + cmd + " err!" 
+			cmdresult = "Error: excute " + cmd + " err!"
 		}
 	} else {
 		excute := exec.Command("/bin/sh", "-c", cmd)
 		buf, err := excute.Output()
 		if err != nil {
 			fmt.Println(err)
-			cmdresult = "Error: excute " + cmd + " err!" 
+			cmdresult = "Error: excute " + cmd + " err!"
 		} else {
 			cmdresult = string(buf)
 			fmt.Println("exec result: ", cmdresult)
