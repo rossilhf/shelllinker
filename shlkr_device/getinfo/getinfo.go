@@ -12,7 +12,7 @@ import (
 )
 
 func Get_curVersion() string {
-	version := "V0.90"
+	version := "V0.91"
 
 	return version
 }
@@ -106,7 +106,23 @@ func Get_curNet(cur_os string) (string, string) {
 				list_pack.PushBack(PackStru{packnum, i})
 			}
 		}
+		//for v := list_pack.Front(); v != nil; v = v.Next() {
+		//	maxPackNum := v.Value.(PackStru).PackNum
+		//	maxPackIdx := v.Value.(PackStru).PackIdx
+		//	fmt.Println(maxPackNum)
+		//	fmt.Println(maxPackIdx)
+		//}
+		//fmt.Println("")
+		//fmt.Println("")
 		new_list_pack := Sort(list_pack)
+		//for v := new_list_pack.Front(); v != nil; v = v.Next() {
+		//	maxPackNum := v.Value.(PackStru).PackNum
+		//	maxPackIdx := v.Value.(PackStru).PackIdx
+		//	fmt.Println(maxPackNum)
+		//	fmt.Println(maxPackIdx)
+		//}
+		//fmt.Println("")
+		//fmt.Println("")
 
 		foundflag := false
 		for v := new_list_pack.Front(); v != nil; v = v.Next() {
@@ -121,27 +137,37 @@ func Get_curNet(cur_os string) (string, string) {
 				tmp = 0
 			}
 			for i := maxPackIdx; i > tmp; i-- {
+				if curNetInfoSlice[i] == "" {
+					break
+				}
 				if strings.Contains(curNetInfoSlice[i], "ether ") {
+					//fmt.Println(curNetInfoSlice[i])
 					maclist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]ether 38:d5:47:00:42:52  txqueuelen 1000  (以太网)
 					macAddr = maclist[8+1]
 				}
 			}
-			if macAddr == "unknown" {
-				continue
-			}
 
 			//find ip address
 			for i := maxPackIdx; i > tmp; i-- {
+				//fmt.Println("kkkkkkkkkkk"+strconv.Itoa(i))
+				if curNetInfoSlice[i] == "" {
+					break
+				}
 				if strings.Contains(curNetInfoSlice[i], "inet ") {
 					iplist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]inet 10.39.251.182  netmask 255.255.252.0  broadcast 10.39.251.255
 					ipAddr = iplist[8+1]
 				}
 			}
 			if ipAddr == "127.0.0.1" || ipAddr == "0.0.0.0" || ipAddr == "unknown" {
+				//fmt.Println("found err ip:"+ipAddr)
 				continue
 			} else {
+				//fmt.Println("found ip:"+ipAddr)
 				foundflag = true
 			}
+			//fmt.Println("ssssssssssssssssssss"+ipAddr)
+			//fmt.Println("dddddddddddddddddddd"+macAddr)
+			//fmt.Println("uuuuuuuuuuuuuuuuuuuu"+strconv.Itoa(maxPackIdx))
 		}
 	}
 
