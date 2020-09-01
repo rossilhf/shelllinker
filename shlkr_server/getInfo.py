@@ -5,7 +5,7 @@ def get_curVersion():
     """
     get program version
     """
-    return "V20200806.1"
+    return "V0.90"
 
 
 if __name__ == "__main__":

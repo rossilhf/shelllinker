@@ -133,6 +133,7 @@ func publishTimer(ctx context.Context, client MQTT.Client) {
 		cur_cpu := getinfo.Get_curCpu(cur_os)
 		cur_mac, cur_ip := getinfo.Get_curNet(cur_os)
 		cur_user := getinfo.Get_curUser(cur_os)
+		fmt.Println(cur_mac, cur_ip)
 
 		reportinfo := ReportDeviceInfo{
 			Msgtype:        "info_report",

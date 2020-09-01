@@ -1,4 +1,5 @@
 package getinfo
+
 //package main
 
 import (
@@ -6,11 +7,12 @@ import (
 	"runtime"
 	"strings"
 	//"fmt"
+	"container/list"
 	"strconv"
 )
 
 func Get_curVersion() string {
-	version := "V20200831"
+	version := "V0.90"
 
 	return version
 }
@@ -51,6 +53,32 @@ func Get_curCpu(cur_os string) string {
 	return curCpu
 }
 
+type PackStru struct {
+	PackNum int64
+	PackIdx int
+}
+
+func Sort(oldList *list.List) (newlist *list.List) {
+	newList := list.New()
+
+	for v := oldList.Front(); v != nil; v = v.Next() {
+		node := newList.Front()
+		for nil != node {
+			if node.Value.(PackStru).PackNum < v.Value.(PackStru).PackNum {
+				newList.InsertBefore(v.Value.(PackStru), node)
+				break
+			}
+			node = node.Next()
+		}
+
+		if node == nil {
+			newList.PushBack(v.Value.(PackStru))
+		}
+	}
+
+	return newList
+}
+
 //get current mac address and ip
 //find mac/ip by most activate RX/TX packets
 func Get_curNet(cur_os string) (string, string) {
@@ -64,9 +92,10 @@ func Get_curNet(cur_os string) (string, string) {
 		curNetInfoSlice := strings.Split(curNetInfo, "\n")
 
 		//find the line just like: "[8_space]RX packets 285275080  bytes 27883859623 (27.8 GB)"
+		//asume max packets matches true net-card
 		lineNum := len(curNetInfoSlice)
-		var maxPackNum int64 = 0
 		maxPackIdx := 0
+		list_pack := list.New()
 		for i := 0; i < lineNum; i++ {
 			if strings.Contains(curNetInfoSlice[i], "RX packets ") {
 				rxlist := strings.Split(curNetInfoSlice[i], " ")   //example: [8_space]RX packets 285275080  bytes 27883859623 (27.8 GB)
@@ -74,26 +103,44 @@ func Get_curNet(cur_os string) (string, string) {
 				rxpack, _ := strconv.ParseInt(rxlist[8+2], 10, 64)
 				txpack, _ := strconv.ParseInt(txlist[8+2], 10, 64)
 				packnum := rxpack + txpack
-				if packnum > maxPackNum {
-					maxPackNum = packnum
-					maxPackIdx = i
+				list_pack.PushBack(PackStru{packnum, i})
+			}
+		}
+		new_list_pack := Sort(list_pack)
+
+		foundflag := false
+		for v := new_list_pack.Front(); v != nil; v = v.Next() {
+			if foundflag == true {
+				break
+			}
+			maxPackIdx = v.Value.(PackStru).PackIdx
+
+			//find mac address
+			tmp := maxPackIdx - 15
+			if tmp < 0 {
+				tmp = 0
+			}
+			for i := maxPackIdx; i > tmp; i-- {
+				if strings.Contains(curNetInfoSlice[i], "ether ") {
+					maclist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]ether 38:d5:47:00:42:52  txqueuelen 1000  (以太网)
+					macAddr = maclist[8+1]
 				}
 			}
-		}
-
-		//find mac address
-		for i := maxPackIdx; i > maxPackIdx-5; i-- {
-			if strings.Contains(curNetInfoSlice[i], "ether ") {
-				maclist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]ether 38:d5:47:00:42:52  txqueuelen 1000  (以太网)
-				macAddr = maclist[8+1]
+			if macAddr == "unknown" {
+				continue
 			}
-		}
 
-		//find ip address
-		for i := maxPackIdx; i > maxPackIdx-5; i-- {
-			if strings.Contains(curNetInfoSlice[i], "inet ") {
-				iplist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]inet 10.39.251.182  netmask 255.255.252.0  broadcast 10.39.251.255
-				ipAddr = iplist[8+1]
+			//find ip address
+			for i := maxPackIdx; i > tmp; i-- {
+				if strings.Contains(curNetInfoSlice[i], "inet ") {
+					iplist := strings.Split(curNetInfoSlice[i], " ") //example: [8_space]inet 10.39.251.182  netmask 255.255.252.0  broadcast 10.39.251.255
+					ipAddr = iplist[8+1]
+				}
+			}
+			if ipAddr == "127.0.0.1" || ipAddr == "0.0.0.0" || ipAddr == "unknown" {
+				continue
+			} else {
+				foundflag = true
 			}
 		}
 	}
@@ -130,6 +177,7 @@ func Get_curPath(cur_os string) string {
 
 /*func main() {
 	mac, ip := Get_curNet("linux")
+	fmt.Println("result:")
 	fmt.Println(mac)
 	fmt.Println(ip)
 }*/
