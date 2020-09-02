@@ -15,7 +15,7 @@ import (
 3. mqtt-server psw
 4. shelllinker tool account*/
 func ReadMQinfo() (string, string, string, string){
-	fileName := "./configfiles/config.dat"
+	fileName := "./config.dat"
 	fi, err := os.Open(fileName)
 	if err != nil {
 		panic(err)

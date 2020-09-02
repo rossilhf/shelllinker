@@ -1,6 +1,6 @@
 #!/bin/sh
 
-progs_debug="./bin/shlkr"
+progs_debug="./shlkr"
 #log_file=./task_monitor.log
 
 detect_deamons_debug()
@@ -14,10 +14,10 @@ detect_deamons_debug()
         if [ -z $pid ]; then
             echo `date "+%Y-%m-%d %H:%M:%S"` ':         resart '${prog} >> ${log_file}
             case ${prog} in
-                ./bin/shlkr)
+                ./shlkr)
                     #python3 run_device.py &
-                    #nohup ./bin/shlkr 1>/dev/null 2>&1 & 
-                    ./bin/shlkr & 
+                    #nohup ./shlkr 1>/dev/null 2>&1 & 
+                    ./shlkr & 
                     ;;
                 *)
                     echo `date "+%Y-%m-%d %H:%M:%S"` ':         cannt resart '${prog} >> ${log_file}
