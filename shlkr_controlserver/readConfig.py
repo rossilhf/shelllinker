@@ -37,23 +37,23 @@ def readMQinfo():
     return ip, user, psw
 
 
-def readToolAccount():
+def readUrlServer():
     """
-    read this remote tool account
+    read update resource server ip-address
     """
     infolist = []
-    with open("./configs/toolaccount.dat", "r") as f:
+    with open("./configs/urlserver.dat", "r") as f:
         line = f.readline()
-        toolaccount = line.strip('\n')
-        print("tool account: ", toolaccount)
+        urlserver = line.strip('\n')
+        print("urlserver: ", urlserver)
 
-    toolaccount = encryption.decrypt(11, toolaccount)
+    urlserver = encryption.decrypt(11, urlserver)
 
-    return toolaccount
+    return urlserver
 
 
 if __name__ == "__main__":
     print("helo")
     #print(readProjPath())
     print(readMQinfo())
-    print(readToolAccount())
+    print(readUrlServer())
