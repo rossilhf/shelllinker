@@ -19,7 +19,7 @@ import (
 var cur_toolaccount string
 
 //structure: device report to server info
-type ReportDeviceInfo struct {
+type ReportDeviceInfoStru struct {
 	Msgtype        string `json:"msgtype"`
 	Curtoolaccount string `json:"curtoolaccount"`
 	Curmac         string `json:"curmac"`
@@ -32,12 +32,15 @@ type ReportDeviceInfo struct {
 }
 
 //structure: device receive cmd from server
-type ReceiveServerCmd struct {
-	Cmd string `json:"cmd"`
+//type: exec:  exec cmd on device
+//type: update: device-part version update
+type ReceiveServerCmdStru struct {
+	Type string `json:"type"`
+	Cmd  string `json:"cmd"`
 }
 
 //structure: device report cmd result
-type ReportCmdResult struct {
+type ReportCmdResultStru struct {
 	Msgtype        string `json:"msgtype"`
 	Curuser        string `json:"curuser"`
 	Curtoolaccount string `json:"curtoolaccount"`
@@ -47,80 +50,88 @@ type ReportCmdResult struct {
 }
 
 //excute cmd from shelllinker server, e.g: ls, pwd, lsusb
-func iotReportMsgHandler(client MQTT.Client, msg MQTT.Message) {
+//and report results
+func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
 	//get cmd content
 	cmd_encry := string(msg.Payload())
 	fmt.Println("got from topic:", msg.Topic(), ", cmd:", cmd_encry)
 	cmd := encryption.Decrypt(11, cmd_encry)
 	fmt.Println("got from topic:", msg.Topic(), ", cmd(decrypt) ", cmd)
 
-	cmdstru := ReceiveServerCmd{}
+	cmdstru := ReceiveServerCmdStru{}
 	_ = json.Unmarshal([]byte(cmd), &cmdstru)
+	cmdtype := cmdstru.Type
 	cmd = cmdstru.Cmd
+	fmt.Println("got cmd type: ", cmdtype)
 	fmt.Println("got cmd: ", cmd)
 
-	//excute cmd
-	cmdresult := ""
-	if strings.IndexAny(cmd, "cd ") == 0 {
-		leng := len(cmd)
-		//path := cmd[3 : leng-1]
-		path := cmd[3:leng]
-		err := os.Chdir(path)
-		if err != nil {
-			fmt.Println(err)
-			cmdresult = "Error: excute " + cmd + " err!"
-		}
-	} else {
-		excute := exec.Command("/bin/sh", "-c", cmd)
-		buf, err := excute.Output()
-		if err != nil {
-			fmt.Println(err)
-			cmdresult = "Error: excute " + cmd + " err!"
+	if cmdtype == "update" {
+	}
+
+	if cmdtype == "exec" {
+		//excute cmd
+		cmdresult := ""
+		if strings.IndexAny(cmd, "cd ") == 0 {
+			leng := len(cmd)
+			//path := cmd[3 : leng-1]
+			path := cmd[3:leng]
+			err := os.Chdir(path)
+			if err != nil {
+				fmt.Println(err)
+				cmdresult = "Error: excute " + cmd + " err!"
+			}
 		} else {
-			cmdresult = string(buf)
-			fmt.Println("exec result: ", cmdresult)
+			excute := exec.Command("/bin/sh", "-c", cmd)
+			buf, err := excute.Output()
+			if err != nil {
+				fmt.Println(err)
+				cmdresult = "Error: excute " + cmd + " err!"
+			} else {
+				cmdresult = string(buf)
+				fmt.Println("exec result: ", cmdresult)
+			}
 		}
-	}
 
-	// generate result structure/json/encrypt-json
-	cur_os := getinfo.Get_curOs()
-	cur_path := getinfo.Get_curPath(cur_os)
-	cur_mac, _ := getinfo.Get_curNet(cur_os)
-	cur_user := getinfo.Get_curUser(cur_os)
+		// generate result structure/json/encrypt-json
+		cur_os := getinfo.Get_curOs()
+		cur_path := getinfo.Get_curPath(cur_os)
+		cur_mac, _ := getinfo.Get_curNet(cur_os)
+		cur_user := getinfo.Get_curUser(cur_os)
 
-	cmdresultstru := ReportCmdResult{
-		Msgtype:        "exec_return",
-		Curuser:        cur_user,
-		Curtoolaccount: cur_toolaccount,
-		Curmac:         cur_mac,
-		Curpath:        cur_path,
-		Report:         cmdresult,
-	}
-	jsonBytes, err := json.Marshal(cmdresultstru)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(string(jsonBytes))
-	}
-	cmdresult_encry := encryption.Encrypt(11, string(jsonBytes))
+		cmdresultstru := ReportCmdResultStru{
+			Msgtype:        "exec_return",
+			Curuser:        cur_user,
+			Curtoolaccount: cur_toolaccount,
+			Curmac:         cur_mac,
+			Curpath:        cur_path,
+			Report:         cmdresult,
+		}
+		jsonBytes, err := json.Marshal(cmdresultstru)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(string(jsonBytes))
+		}
+		cmdresult_encry := encryption.Encrypt(11, string(jsonBytes))
 
-	//send out cmd excute result
-	topic := "topic_dev2ser/exec_result/" + cur_mac
-	client.Publish(topic, 1, false, cmdresult_encry)
+		//send out cmd excute result
+		topic := "topic_dev2ser/exec_result/" + cur_mac
+		client.Publish(topic, 1, false, cmdresult_encry)
+	}
 }
 
 //listen cmd from shelllinker server
-func onConnectHandler(client MQTT.Client) {
+func listenCmdHandler(client MQTT.Client) {
 	fmt.Println("client:", "connected")
 
 	curos := getinfo.Get_curOs()
 	curmac, _ := getinfo.Get_curNet(curos)
 	topic := "topic_ser2dev/exec_cmd/" + curmac
-	client.Subscribe(topic, 1, iotReportMsgHandler)
+	client.Subscribe(topic, 1, execCmdHandler)
 }
 
 //report current device info every hour
-func publishTimer(ctx context.Context, client MQTT.Client) {
+func reportDevInfo(ctx context.Context, client MQTT.Client) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -135,7 +146,7 @@ func publishTimer(ctx context.Context, client MQTT.Client) {
 		cur_user := getinfo.Get_curUser(cur_os)
 		fmt.Println(cur_mac, cur_ip)
 
-		reportinfo := ReportDeviceInfo{
+		reportinfo := ReportDeviceInfoStru{
 			Msgtype:        "info_report",
 			Curtoolaccount: cur_toolaccount,
 			Curmac:         cur_mac,
@@ -173,18 +184,18 @@ func main() {
 	fmt.Println(de_mqttip, de_mqttuser, de_mqttpsw, de_toolaccount)
 	cur_toolaccount = de_toolaccount
 
-	//connect to mqtt server, execute cmd from shelllinker server
+	//connect to mqtt server, listen and execute cmd from shelllinker server
 	opts := MQTT.NewClientOptions()
 	opts.AddBroker(de_mqttip)
 	opts.SetUsername(de_mqttuser)
 	opts.SetPassword(de_mqttpsw)
-	opts.SetOnConnectHandler(onConnectHandler)
+	opts.SetOnConnectHandler(listenCmdHandler)
 
 	//report device info every hour
 	client := MQTT.NewClient(opts)
 	client.Connect()
 	c, cancel := context.WithCancel(context.Background())
-	go publishTimer(c, client)
+	go reportDevInfo(c, client)
 
 	//listen ctrl+c to exit
 	sigChan := make(chan os.Signal)

@@ -67,6 +67,7 @@ def process_sendCmd(client, msg, topic):
     """
     # send out msg
     resultdict = {}
+    resultdict.update({"type": "exec"}) # type exec: this cmd is to exec on device
     resultdict.update({"cmd": msg})
     resultMsg_json = json.dumps(resultdict)
     resultMsg_json_encrypt = encryption.encrypt(11, resultMsg_json)
