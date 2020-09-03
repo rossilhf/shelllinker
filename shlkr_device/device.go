@@ -14,6 +14,7 @@ import (
 	"shlkr_device/config"
 	"shlkr_device/encryption"
 	"shlkr_device/getinfo"
+	"shlkr_device/update"
 )
 
 var cur_toolaccount string
@@ -50,7 +51,7 @@ type ReportCmdResultStru struct {
 }
 
 //process device-part version update
-func update(url string) {
+/*func update(url string) {
 	//download device bin file
 	ok := true
 	excute := exec.Command("/bin/sh", "-c", "wget "+url)
@@ -113,7 +114,7 @@ func update(url string) {
 			fmt.Println(cmdresult)
 		}
 	}
-}
+}*/
 
 //excute cmd from shelllinker server, e.g: ls, pwd, lsusb
 //and report results
@@ -132,7 +133,7 @@ func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
 	fmt.Println("got cmd: ", cmd)
 
 	if cmdtype == "update" {
-		update(cmd)
+		update.Update(cmd)
 	}
 
 	if cmdtype == "exec" {
@@ -234,7 +235,7 @@ func reportDevInfo(ctx context.Context, client MQTT.Client) {
 		strsend_encry := encryption.Encrypt(11, string(jsonBytes))
 		topic := "topic_dev2ser/dev_info/" + cur_mac
 		client.Publish(topic, 1, false, strsend_encry)
-		time.Sleep(time.Second * 60 * 60)
+		time.Sleep(time.Second * 60 * 5) //60)
 	}
 }
 
