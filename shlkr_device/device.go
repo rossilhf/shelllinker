@@ -49,6 +49,72 @@ type ReportCmdResultStru struct {
 	Report         string `json:"report"`
 }
 
+//process device-part version update
+func update(url string) {
+	//download device bin file
+	ok := true
+	excute := exec.Command("/bin/sh", "-c", "wget "+url)
+	_, err := excute.Output()
+	if err != nil {
+		fmt.Println(err)
+		cmdresult := "Error: wget " + url + " err!"
+		fmt.Println(cmdresult)
+		ok = false
+	}
+
+	//remove old bin file
+	if ok {
+		excute := exec.Command("/bin/sh", "-c", "rm shlkr")
+		_, err := excute.Output()
+		if err != nil {
+			ok = false
+			fmt.Println(err)
+			cmdresult := "Error: rm shlkr err!"
+			fmt.Println(cmdresult)
+		}
+	}
+
+	//change downloaded file name
+	if ok {
+		tmplist := strings.Split(url, "/")
+		filename := tmplist[len(tmplist)-1]
+		fmt.Println("filename: ", filename)
+		excute := exec.Command("/bin/sh", "-c", "mv "+filename+" shlkr")
+		_, err := excute.Output()
+		if err != nil {
+			ok = false
+			fmt.Println(err)
+			cmdresult := "Error: rm shlkr err!"
+			fmt.Println(cmdresult)
+		}
+	}
+
+	//chmod +x
+	if ok {
+		excute := exec.Command("/bin/sh", "-c", "chmod +x shlkr")
+		_, err := excute.Output()
+		if err != nil {
+			ok = false
+			fmt.Println(err)
+			cmdresult := "Error: chmod +x shlkr err!"
+			fmt.Println(cmdresult)
+		}
+	}
+
+	//kill current ./shlkr process, restart new version ./shlkr process
+	//note: auto-restart new process will by shlkr.sh
+	if ok {
+		excute := exec.Command("/bin/sh", "-c", "ps -ef | grep ./shlkr | grep -v grep | awk '{print $2}'|xargs kill -9")
+		_, err := excute.Output()
+		if err != nil {
+			ok = false
+			fmt.Println(err)
+			cmdresult := "Error: kill old shlkr err!"
+			fmt.Println(cmdresult)
+		}
+	}
+}
+
 //excute cmd from shelllinker server, e.g: ls, pwd, lsusb
 //and report results
 func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
@@ -66,6 +132,7 @@ func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
 	fmt.Println("got cmd: ", cmd)
 
 	if cmdtype == "update" {
+		update(cmd)
 	}
 
 	if cmdtype == "exec" {
