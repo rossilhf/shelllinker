@@ -65,12 +65,14 @@ def process_updateCmd(mqttclient, urlserver, curversion):
             for node in output:
                 node_mac = node[0]
                 node_arch = node[1]
+                if node_arch == "x86_64":
+                    node_arch = "amd64"
                 node_os = node[2]
                 node_time = node[4]
                 node_ver = node[6]
                 if isAlive(node_time) and node_ver != curversion:
                     topic = "topic_ser2dev/exec_cmd/" + node_mac
-                    binfile = "device_" + node_os + "_" + node_arch + "_" + node_ver
+                    binfile = "device_" + node_os + "_" + node_arch + "_" + curversion
                     content = os.path.join(urlserver, binfile)
 
                     # send out msg
@@ -109,7 +111,7 @@ def process_main():
 
     while True:
         process_updateCmd(mqttclient, urlserver, curversion)
-        time.sleep(60 * 60)
+        time.sleep(60 * 5)#60)
 
 
 if __name__ == "__main__":
