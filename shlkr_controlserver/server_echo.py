@@ -77,10 +77,7 @@ def process_sendCmd(client, msg, topic):
     return
 
 
-def process_logIn():
-    """
-    log in this tool by tool-account and password
-    """
+"""def process_logIn():
     print("")
     print("you should log in system first.")
     print("if no siged tool-account, could use test-account: 'test', password: 'test'.")
@@ -133,10 +130,11 @@ def process_logIn():
         while True:
             pass
 
-    return toolaccount
+    return toolaccount"""
 
 
-def process_localExcute(toolaccount):
+#def process_localExcute(toolaccount):
+def process_localExcute():
     """
     excuet private cmd locally
     .help: show help
@@ -160,7 +158,8 @@ def process_localExcute(toolaccount):
                 print(helpInfo)
 
             if keycmd == privateCmdList[1]: # .list
-                dbpath = "./db/deviceList__"+toolaccount+".db"
+                #dbpath = "./db/deviceList__"+toolaccount+".db"
+                dbpath = "./db/deviceList.db"
                 con = sqlite3.connect(dbpath)
                 cur = con.cursor()
                 try:
@@ -297,11 +296,12 @@ def process_main():
     mqttclient.loop_start()
 	
     #log in this tool by tool-account and password
-    toolaccount = process_logIn()
+    #toolaccount = process_logIn()
 
     # get cmd from keyboard
     while True:
-        linkmac = process_localExcute(toolaccount)
+        #linkmac = process_localExcute(toolaccount)
+        linkmac = process_localExcute()
 
         topic = "topic_ser2dev/exec_cmd/" + linkmac
         process_echo2Device(topic, mqttclient)

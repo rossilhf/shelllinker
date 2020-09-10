@@ -51,9 +51,9 @@ def process_updateCmd(mqttclient, urlserver, curversion):
     file_names = os.listdir("./db/")    
     file_list = [os.path.join("./db/", file) for file in file_names]
 
-    # find all device db (different db belongs to different account)
+    # find device db
     for filepath in file_list:
-        if "deviceList__" in filepath:
+        if "deviceList" in filepath:
             #print(filepath)
 
             # check all devices 

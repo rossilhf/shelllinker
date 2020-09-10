@@ -17,12 +17,12 @@ import (
 	"shlkr_device/update"
 )
 
-var cur_toolaccount string
+//var cur_toolaccount string
 
 //structure: device report to server info
 type ReportDeviceInfoStru struct {
 	Msgtype        string `json:"msgtype"`
-	Curtoolaccount string `json:"curtoolaccount"`
+	//Curtoolaccount string `json:"curtoolaccount"`
 	Curmac         string `json:"curmac"`
 	Curcpu         string `json:"curcpu"`
 	Curos          string `json:"curos"`
@@ -44,7 +44,7 @@ type ReceiveServerCmdStru struct {
 type ReportCmdResultStru struct {
 	Msgtype        string `json:"msgtype"`
 	Curuser        string `json:"curuser"`
-	Curtoolaccount string `json:"curtoolaccount"`
+	//Curtoolaccount string `json:"curtoolaccount"`
 	Curmac         string `json:"curmac"`
 	Curpath        string `json:"curpath"`
 	Report         string `json:"report"`
@@ -169,7 +169,7 @@ func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
 		cmdresultstru := ReportCmdResultStru{
 			Msgtype:        "exec_return",
 			Curuser:        cur_user,
-			Curtoolaccount: cur_toolaccount,
+			//Curtoolaccount: cur_toolaccount,
 			Curmac:         cur_mac,
 			Curpath:        cur_path,
 			Report:         cmdresult,
@@ -216,7 +216,7 @@ func reportDevInfo(ctx context.Context, client MQTT.Client) {
 
 		reportinfo := ReportDeviceInfoStru{
 			Msgtype:        "info_report",
-			Curtoolaccount: cur_toolaccount,
+			//Curtoolaccount: cur_toolaccount,
 			Curmac:         cur_mac,
 			Curcpu:         cur_cpu,
 			Curos:          cur_os,
@@ -240,17 +240,18 @@ func reportDevInfo(ctx context.Context, client MQTT.Client) {
 }
 
 func main() {
-	ip, user, psw, toolaccount := config.ReadMQinfo()
-	fmt.Println(ip, user, psw, toolaccount)
+	//ip, user, psw, toolaccount := config.ReadMQinfo()
+	ip, user, psw := config.ReadMQinfo()
+	fmt.Println(ip, user, psw)
 
 	//str := encryption.Encrypt(11, "tcp://117.50.109.189:1883")
 	//fmt.Println(str)
 	de_mqttip := encryption.Decrypt(11, ip)
 	de_mqttuser := encryption.Decrypt(11, user)
 	de_mqttpsw := encryption.Decrypt(11, psw)
-	de_toolaccount := encryption.Decrypt(11, toolaccount)
-	fmt.Println(de_mqttip, de_mqttuser, de_mqttpsw, de_toolaccount)
-	cur_toolaccount = de_toolaccount
+	//de_toolaccount := encryption.Decrypt(11, toolaccount)
+	fmt.Println(de_mqttip, de_mqttuser, de_mqttpsw)
+	//cur_toolaccount = de_toolaccount
 
 	//connect to mqtt server, listen and execute cmd from shelllinker server
 	opts := MQTT.NewClientOptions()

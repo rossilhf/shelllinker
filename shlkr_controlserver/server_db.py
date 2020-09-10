@@ -22,7 +22,7 @@ log = loger.Log("remotetool-server-db")
 GotMsgContext = ""
 
 
-def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, cursn, heartbeattime):
+def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime):
     """
     save device info to db
     """
@@ -33,7 +33,7 @@ def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, 
         con = sqlite3.connect(dbpath)
         cur = con.cursor()
         try:
-            cur.execute('CREATE TABLE deviceList(mac TEXT PRIMARY KEY, cpu TEXT, os TEXT, ip TEXT, heartbeattime TEXT, user TEXT, version TEXT, sn TEXT)')
+            cur.execute('CREATE TABLE deviceList(mac TEXT PRIMARY KEY, cpu TEXT, os TEXT, ip TEXT, heartbeattime TEXT, user TEXT, version TEXT)')
             con.commit()
         except:
             log.warning("create db file failed.")
@@ -47,14 +47,14 @@ def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, 
     if len(output) == 0:
         # add new device info
         try:
-            cur.execute("INSERT INTO deviceList(mac, cpu, os, ip, heartbeattime, user, version, sn) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (curmac, curcpu, curos, curip, heartbeattime, curuser, curversion, cursn))
+            cur.execute("INSERT INTO deviceList(mac, cpu, os, ip, heartbeattime, user, version) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (curmac, curcpu, curos, curip, heartbeattime, curuser, curversion))
             con.commit()
         except:
             log.warning("insert to db failed.")
     else:
         # update old device info
         try:
-            cur.execute("UPDATE deviceList SET cpu='%s', os='%s', ip='%s', heartbeattime='%s', user='%s', version='%s', sn='%s' WHERE mac='%s'" %(curcpu, curos, curip, heartbeattime, curuser, curversion, cursn, curmac))
+            cur.execute("UPDATE deviceList SET cpu='%s', os='%s', ip='%s', heartbeattime='%s', user='%s', version='%s' WHERE mac='%s'" %(curcpu, curos, curip, heartbeattime, curuser, curversion, curmac))
             con.commit()
         except:
             log.warning("update db failed.")
@@ -139,17 +139,12 @@ def process_main():
             else:
                 curversion= "unknown"
 
-            if "cursn" in reportdict:
-                cursn = reportdict["cursn"]
-            else:
-                cursn = "unknown"
-
             if "heartbeattime" in reportdict:
                 heartbeattime = reportdict["heartbeattime"]
             else:
                 heartbeattime = "unknown"
 
-            saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, cursn, heartbeattime)
+            saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime)
             GotMsgContext = ""
 
 

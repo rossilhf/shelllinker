@@ -14,7 +14,8 @@ import (
 2. mqtt-server user, 
 3. mqtt-server psw
 4. shelllinker tool account*/
-func ReadMQinfo() (string, string, string, string){
+//func ReadMQinfo() (string, string, string, string){
+func ReadMQinfo() (string, string, string){
 	fileName := "./config.dat"
 	fi, err := os.Open(fileName)
 	if err != nil {
@@ -25,9 +26,9 @@ func ReadMQinfo() (string, string, string, string){
 	var ip string
 	var user string
 	var psw string
-	var toolaccount string
+	//var toolaccount string
 	buf := bufio.NewReader(fi)
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 3; i++ {
 		line, _, _ := buf.ReadLine()
 		content := string(line)
 		content = strings.Replace(content, " ", "", -1)
@@ -44,10 +45,11 @@ func ReadMQinfo() (string, string, string, string){
 		if i == 2 {
 			psw = content
 		}
-		if i == 3 {
-			toolaccount = content
-		}
+		//if i == 3 {
+		//	toolaccount = content
+		//}
 	}
 
-	return ip, user, psw, toolaccount
+	//return ip, user, psw, toolaccount
+	return ip, user, psw
 }
