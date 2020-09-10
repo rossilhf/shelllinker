@@ -21,15 +21,15 @@ import (
 
 //structure: device report to server info
 type ReportDeviceInfoStru struct {
-	Msgtype        string `json:"msgtype"`
+	Msgtype string `json:"msgtype"`
 	//Curtoolaccount string `json:"curtoolaccount"`
-	Curmac         string `json:"curmac"`
-	Curcpu         string `json:"curcpu"`
-	Curos          string `json:"curos"`
-	Curip          string `json:"curip"`
-	Heartbeattime  string `json:"heartbeattime"`
-	Curversion     string `json:"curversion"`
-	Curuser        string `json:"curuser"`
+	Curmac        string `json:"curmac"`
+	Curcpu        string `json:"curcpu"`
+	Curos         string `json:"curos"`
+	Curip         string `json:"curip"`
+	Heartbeattime string `json:"heartbeattime"`
+	Curversion    string `json:"curversion"`
+	Curuser       string `json:"curuser"`
 }
 
 //structure: device receive cmd from server
@@ -42,12 +42,12 @@ type ReceiveServerCmdStru struct {
 
 //structure: device report cmd result
 type ReportCmdResultStru struct {
-	Msgtype        string `json:"msgtype"`
-	Curuser        string `json:"curuser"`
+	Msgtype string `json:"msgtype"`
+	Curuser string `json:"curuser"`
 	//Curtoolaccount string `json:"curtoolaccount"`
-	Curmac         string `json:"curmac"`
-	Curpath        string `json:"curpath"`
-	Report         string `json:"report"`
+	Curmac  string `json:"curmac"`
+	Curpath string `json:"curpath"`
+	Report  string `json:"report"`
 }
 
 //process device-part version update
@@ -167,12 +167,12 @@ func execCmdHandler(client MQTT.Client, msg MQTT.Message) {
 		cur_user := getinfo.Get_curUser(cur_os)
 
 		cmdresultstru := ReportCmdResultStru{
-			Msgtype:        "exec_return",
-			Curuser:        cur_user,
+			Msgtype: "exec_return",
+			Curuser: cur_user,
 			//Curtoolaccount: cur_toolaccount,
-			Curmac:         cur_mac,
-			Curpath:        cur_path,
-			Report:         cmdresult,
+			Curmac:  cur_mac,
+			Curpath: cur_path,
+			Report:  cmdresult,
 		}
 		jsonBytes, err := json.Marshal(cmdresultstru)
 		if err != nil {
@@ -215,15 +215,15 @@ func reportDevInfo(ctx context.Context, client MQTT.Client) {
 		fmt.Println(cur_mac, cur_ip)
 
 		reportinfo := ReportDeviceInfoStru{
-			Msgtype:        "info_report",
+			Msgtype: "info_report",
 			//Curtoolaccount: cur_toolaccount,
-			Curmac:         cur_mac,
-			Curcpu:         cur_cpu,
-			Curos:          cur_os,
-			Curip:          cur_ip,
-			Heartbeattime:  time.Now().Format("2006-01-02 15:04:05"),
-			Curversion:     cur_version,
-			Curuser:        cur_user,
+			Curmac:        cur_mac,
+			Curcpu:        cur_cpu,
+			Curos:         cur_os,
+			Curip:         cur_ip,
+			Heartbeattime: time.Now().Format("2006-01-02 15:04:05"),
+			Curversion:    cur_version,
+			Curuser:       cur_user,
 		}
 		//strsend := strconv.Itoa(int(time.Now().Unix())) + "report__0"
 		jsonBytes, err := json.Marshal(reportinfo)
