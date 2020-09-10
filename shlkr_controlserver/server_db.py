@@ -22,11 +22,13 @@ log = loger.Log("remotetool-server-db")
 GotMsgContext = ""
 
 
-def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime):
+#def saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime):
+def saveInfo(curmac, curcpu, curuser, curip, curos, curversion, heartbeattime):
     """
     save device info to db
     """
-    dbpath = "./db/deviceList__"+curtoolaccount+".db"
+    #dbpath = "./db/deviceList__"+curtoolaccount+".db"
+    dbpath = "./db/deviceList.db"
 
     # create db file
     if not os.path.isfile(dbpath):
@@ -104,11 +106,6 @@ def process_main():
             print("got a device info report(decrypt): "+gotMsgContext_decrypt+"\n")
             reportdict = json.loads(gotMsgContext_decrypt)
 
-            if "curtoolaccount" in reportdict:
-                curtoolaccount = reportdict["curtoolaccount"]
-            else:
-                curtoolaccount = "unknown"
-
             if "curuser" in reportdict:
                 curuser = reportdict["curuser"]
             else:
@@ -144,7 +141,8 @@ def process_main():
             else:
                 heartbeattime = "unknown"
 
-            saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime)
+            #saveInfo(curtoolaccount, curmac, curcpu, curuser, curip, curos, curversion, heartbeattime)
+            saveInfo(curmac, curcpu, curuser, curip, curos, curversion, heartbeattime)
             GotMsgContext = ""
 
 
