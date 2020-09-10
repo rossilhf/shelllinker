@@ -31,7 +31,7 @@ if __name__ == "__main__":
     #mqttclient0.on_connect = on_connect0
     #mqttclient0.on_message = on_message0
     mqttclient0.username_pw_set("admin", "public")
-    mqttclient0.connect("117.50.109.189", 1883, 60)
+    mqttclient0.connect("39.104.14.132", 1883, 60)
     mqttclient0.loop_start()
 
     mqttclient = mqtt.Client()

@@ -46,15 +46,21 @@ def decrypt(ksa, s):
 if __name__ == "__main__":
     #text = '{"name":"rossi", "class":"car", context:"hello, i am Charmy."}'
     #text = "tcp://117.50.109.189:1883"#"rossi_lhf"
-    text = "http://10.39.251.181:8000"#"rossi_lhf"
+    text = "tcp://39.104.14.132:1883"
+    #text = "http://10.39.251.181:8000"#"rossi_lhf"
+    #text = "http://39.104.14.132:8000"#"rossi_lhf"
+    #text = "39.104.14.132"
     start = time.time()
     s = encrypt(11, text)
     end = time.time()
-    print("encry time cost: ", end-start)
+    #print("encry time cost: ", end-start)
     print("encrypted string: ", s)
 
     start = time.time()
+    #sss = "/1/111@/3101@//101:0@//1;0:0"
+    #sss = ";4737490?/?//1/111@/3101@//101:0@//1;0:090/1;0;0@0" 
     ds = decrypt(11, s)
+    #ds = decrypt(11, sss)
     end = time.time()
-    print("decry time cost: ", end-start)
+    #print("decry time cost: ", end-start)
     print("decrypted string: ", ds)
