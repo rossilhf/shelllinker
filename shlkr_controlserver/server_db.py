@@ -49,7 +49,7 @@ def saveInfo(curmac, curcpu, curuser, curip, curos, curversion, heartbeattime):
     if len(output) == 0:
         # add new device info
         try:
-            cur.execute("INSERT INTO deviceList(mac, cpu, os, ip, heartbeattime, user, version) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (curmac, curcpu, curos, curip, heartbeattime, curuser, curversion))
+            cur.execute("INSERT INTO deviceList(mac, cpu, os, ip, heartbeattime, user, version) VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (curmac, curcpu, curos, curip, heartbeattime, curuser, curversion))
             con.commit()
         except:
             log.warning("insert to db failed.")
