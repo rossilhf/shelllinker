@@ -1,6 +1,6 @@
-远程设备管理工具--“谢凌客”
-
-2020.9.4
+远程设备管理工具--shelllinker“谢凌客”
+linux shell version of teamviewer
+2020.9.10
 
 本工具可以进行大批量的智能设备(目前仅支持linux，部分支持windows)的远程管理和远程控制，主要用于在设备故障时，远程控制调试。可以看作是命令行模式的teamviewer。
 
@@ -40,14 +40,10 @@
 
 To Do:
 
-1.accountDb，deviceDb，process_db， process_update分离到系统后台服务中；process_echo分离为用户的控制客户端
+1.完善设备端查找本机mac和ip功能的鲁棒性。用ip addr 补充 ifconfig
 
-2.用户注册。(目前靠手动在数据库中添加新账户)
+2.服务端需完善对大量设备的查看功能，如按某项排序等
 
-3.完善设备端查找本机mac和ip功能的鲁棒性
+3.根据系统开放的端口，选择合适的通信协议方式
 
-4.服务端需完善对大量设备的查看功能，如按某项排序等
-
-5.根据系统开放的端口，选择合适的通信协议方式
-
-6.完善对其他系统的支持，如windows，android，ios
+4.完善对其他系统的支持，如windows，android，ios
