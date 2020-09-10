@@ -1,5 +1,7 @@
 远程设备管理工具--shelllinker“谢凌客”
+
 linux shell version of teamviewer
+
 2020.9.10
 
 本工具可以进行大批量的智能设备(目前仅支持linux，部分支持windows)的远程管理和远程控制，主要用于在设备故障时，远程控制调试。可以看作是命令行模式的teamviewer。
