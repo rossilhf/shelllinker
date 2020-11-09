@@ -2,11 +2,19 @@
 
 linux shell version of teamviewer
 
-2020.9.10
+2020.11.9
 
 本工具可以进行大批量的智能设备(目前仅支持linux，部分支持windows)的远程管理和远程控制，主要用于在设备故障时，远程控制调试。可以看作是命令行模式的teamviewer。
 
-本工具分成三个独立部分：
+本工具组成结构如下图所示：
+
+![image](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_stru.png)
+
+本工具使用流程如下图所示：
+
+![image](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_howtouse.png)
+
+分成三个独立部分：
 
 
 # 设备端：
