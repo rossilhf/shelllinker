@@ -8,11 +8,11 @@ linux shell version of teamviewer
 
 本工具组成结构如下图所示：
 
-![image](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_stru.png)
+![img](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_stru.png)
 
 本工具使用流程如下图所示：
 
-![image](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_howtouse.png)
+![img](https://github.com/rossilhf/shelllinker/blob/master/shelllinker_howtouse.png)
 
 分成三个独立部分：
 
