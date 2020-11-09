@@ -1,4 +1,4 @@
-远程设备管理工具--shelllinker“谢凌客”
+# 远程设备管理工具--shelllinker“谢凌客”
 
 linux shell version of teamviewer
 
@@ -9,7 +9,7 @@ linux shell version of teamviewer
 本工具分成三个独立部分：
 
 
-设备端：
+# 设备端：
 
 设备端代码每次启动时，都会主动连接指定mqtt服务器，执行三类工作：
 
@@ -24,7 +24,7 @@ linux shell version of teamviewer
 2./etc/ssh/ssh_config 中，StrictHostKeyChecking 设置为no
 
 
-服务器(控制)端：
+# 服务器(控制)端：
 
 服务器端有三个独立进程。
 
@@ -35,12 +35,12 @@ linux shell version of teamviewer
 进程3：该进程手动开启和关闭，用于账号登录、设备列表查看、指定设备交互控制。进程启动后，首先进入本地命令状态，支持若干私有命令，如“.help”,".list",".echo"；使用.echo xxxx命令进入远程命令控制状态，即可以与设备端进行命令行交互(但有不少限制，如不能sudo，top等)。使用私有命令".help"可以查看如何解除限制。使用私有命令".exit"退出远程命令控制状态，回到本地命令控制状态。
 
 
-服务器(web资源)端：
+# 服务器(web资源)端：
 
 开启http服务，提供最新版本客户端程序的下载服务
 
 
-To Do:
+# To Do:
 
 1.完善设备端查找本机mac和ip功能的鲁棒性。用ip addr 补充 ifconfig
 
